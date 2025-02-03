@@ -17,7 +17,7 @@ API simples para consulta de horários internacionais, utilizando a World Time A
 - httpx
 - Docker
 - Azure DevOps
-- pytest
+
 
 ## 🔧 Pré-requisitos
 
@@ -90,17 +90,6 @@ A API estará disponível em `http://localhost:7071`
 }
 ```
 
-## 🧪 Executando Testes
-
-### Testes Locais
-```bash
-pytest tests/
-```
-
-### Cobertura de Testes
-```bash
-pytest --cov=src tests/
-```
 
 ## 🔒 Segurança
 
