@@ -1,0 +1,50 @@
+trigger:
+  - main
+
+variables:
+  - group: world-time-api-vars
+
+stages:
+- stage: BuildPython
+  displayName: 'Check Python Build'
+  jobs:
+  - job: CheckPython
+    displayName: 'Verify Python Code'
+    pool:
+      vmImage: 'ubuntu-latest'
+    
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '$(pythonVersion)'
+      displayName: 'Use Python $(pythonVersion)'
+
+    - script: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+      displayName: 'Install dependencies'
+
+    - script: |
+        python -m compileall -q .
+      displayName: 'Check Python Code Compilation'
+
+- stage: BuildAndPush
+  displayName: 'Build and Push Docker Image'
+  dependsOn: BuildPython
+  condition: succeeded()
+  jobs:
+  - job: BuildAndPush
+    displayName: 'Build and Push to Docker Hub'
+    pool:
+      vmImage: 'ubuntu-latest'
+    
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: '$(containerRegistry)'  
+        repository: '$(dockerHubUser)/$(imageName)'
+        command: 'buildAndPush'
+        Dockerfile: 'Dockerfile'
+        tags: |
+          $(Build.BuildId)
+          latest

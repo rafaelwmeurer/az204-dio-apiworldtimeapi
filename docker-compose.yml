@@ -1,0 +1,9 @@
+services:
+  world-time-api:
+    build: .
+    ports:
+      - "7071:7071"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONPATH=/app
